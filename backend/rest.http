@@ -1,0 +1,34 @@
+###
+GET http://localhost:3000/feed/posts 
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFzbGFtOEBnbWFpbC5jb20iLCJ1c2VySWQiOiI2MWI5NzIwNjEyZjZkODBlNzhkYzA2MjgiLCJpYXQiOjE2Mzk1NDQxNzZ9.xLmGHyPoX6hPOnSTmjLqH-7GA7GJ0yNlxT6ifQiVmig
+
+###
+POST http://localhost:4000/auth/signup
+Content-Type: application/json
+
+{
+    "email":"aslammac@gmail.com"   ,
+    "password":"12345678",
+    "name":"aslammac7",
+    "status":"Hello gooys"
+}
+
+###
+GET http://localhost:3000/auth/token
+Content-Type: application/json
+    
+{
+    "email":"aslam8@gmail.com",
+    "password":"12345678",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFzbGFtOEBnbWFpbC5jb20iLCJ1c2VySWQiOiI2MWI5NzIwNjEyZjZkODBlNzhkYzA2MjgiLCJpYXQiOjE2Mzk1NDQxNzZ9.xLmGHyPoX6hPOnSTmjLqH-7GA7GJ0yNlxT6ifQiVmig"
+}
+
+###
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+    
+{
+    "username":"aslammac7",
+    "password":"12345678"
+}
