@@ -1,0 +1,27 @@
+name: Deploy on Push
+
+on:
+  push:
+    branches:
+      - main # Change if your default branch is different
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ${{ secrets.PROJECT_DIR }} || exit 1
+            git pull origin main
+            docker-compose down
+            docker-compose up --build -d
+            docker system prune -f
