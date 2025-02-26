@@ -20,7 +20,7 @@ export const useSocket = () => {
 };
 
 const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
-  const socket = useMemo(() => io("http://backend:3001"), []);
+  const socket = useMemo(() => io("https://api.claviertech.xyz"), []);
 
   useEffect(() => {
     return () => {
