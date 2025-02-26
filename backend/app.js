@@ -9,12 +9,14 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
+    origin: ["https://cloud.claviertech.xyz", "http://localhost:3000", "http://localhost:3001"], // Allow 
+    // frontend origin
     cors: true,
     maxHttpBufferSize: 1e8
 });
 
 app.use(cors());
- 
+
 app.get("/", (req, res) => {
     res.send("Hello World");
 });
@@ -42,46 +44,46 @@ io.on("connection", (socket) => {
     socket.on('room:chat', (data) => {
         const { room, message } = data;
         console.log(data);
-        io.to(room).emit('room:chat', { message, from: socket.id , email: socketToEmail.get(socket.id)});
+        io.to(room).emit('room:chat', { message, from: socket.id, email: socketToEmail.get(socket.id) });
     });
 
     // Listen for image messages from the client
-  socket.on('room:chat-image', ({
-    room,
-    email,
-    image
-  }) => {
-    // console.log('Received image data: ', image);
-    
-    // // Optionally, process the image data (save, resize, etc.)
-    // // For example, save it as a file or broadcast it to other clients
-    // // You could use fs to save it, for example:
-    // const fs = require('fs');
-    // const imageBuffer = Buffer.from(image.split(',')[1], 'base64');
-    
-    // fs.writeFile('received_image.png', imageBuffer, (err) => {
-    //   if (err) {
-    //     console.log('Error saving image:', err);
-    //   } else {
-    //     console.log('Image saved successfully');
-    //   }
-    // });
+    socket.on('room:chat-image', ({
+        room,
+        email,
+        image
+    }) => {
+        // console.log('Received image data: ', image);
 
-    // Broadcast the image to all other connected clients (optional)
-    // socket.broadcast.emit('receive-image', imageData);
-    io.to(room).emit('room:chat-image', { image, email: socketToEmail.get(socket.id) });
-  });
+        // // Optionally, process the image data (save, resize, etc.)
+        // // For example, save it as a file or broadcast it to other clients
+        // // You could use fs to save it, for example:
+        // const fs = require('fs');
+        // const imageBuffer = Buffer.from(image.split(',')[1], 'base64');
 
-  socket.on("typing", ({ room, isTyping,email }) => {
-    socket.to(room).emit("typing", { email, isTyping });
-  });
+        // fs.writeFile('received_image.png', imageBuffer, (err) => {
+        //   if (err) {
+        //     console.log('Error saving image:', err);
+        //   } else {
+        //     console.log('Image saved successfully');
+        //   }
+        // });
+
+        // Broadcast the image to all other connected clients (optional)
+        // socket.broadcast.emit('receive-image', imageData);
+        io.to(room).emit('room:chat-image', { image, email: socketToEmail.get(socket.id) });
+    });
+
+    socket.on("typing", ({ room, isTyping, email }) => {
+        socket.to(room).emit("typing", { email, isTyping });
+    });
 
     socket.on('room:leave', ({
         room,
         email
     }) => {
         socket.leave(room);
-        io.to(room).emit('user:leave', {email:email, id: socket.id });
+        io.to(room).emit('user:leave', { email: email, id: socket.id });
         emailToSocket.delete(socketToEmail.get(socket.id));
         socketToEmail.delete(socket.id);
     }
@@ -95,8 +97,8 @@ io.on("connection", (socket) => {
     );
 
 
-     // Listen for a video offer (for initiating a call)
-     socket.on('video-offer', ({offer, to}) => {
+    // Listen for a video offer (for initiating a call)
+    socket.on('video-offer', ({ offer, to }) => {
         console.log('video-offer', to);
         io.to(to).emit('video-offer', {
             offer,
@@ -105,7 +107,7 @@ io.on("connection", (socket) => {
     });
 
     // Listen for an answer to a video offer
-    socket.on('video-answer', ({answer, to}) => {
+    socket.on('video-answer', ({ answer, to }) => {
         console.log('video-answer', to);
         console.log(answer);
         io.to(to).emit('video-answer', {
@@ -115,7 +117,7 @@ io.on("connection", (socket) => {
     });
 
     // Handle ICE candidates
-    socket.on('new-ice-candidate', ({candidate, to}) => {
+    socket.on('new-ice-candidate', ({ candidate, to }) => {
         console.log('new-ice-candidate', to);
         console.log(candidate);
         io.to(to).emit('new-ice-candidate', candidate);
@@ -131,7 +133,7 @@ io.on("connection", (socket) => {
         // Broadcast to other users in the room that the call has ended
         socket.to(room).emit('call-ended', { email });
 
-      
+
     });
 })
 
