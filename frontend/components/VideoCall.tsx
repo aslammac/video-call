@@ -1,9 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useSocket } from "@/utils/socketProvider";
 
 const VideoCall: React.FC = () => {
+  const iceServers = {
+    iceServers: [
+      { urls: "stun:stun1.l.google.com:19302" },
+      { urls: "stun:stun2.l.google.com:19302" },
+    ],
+  };
+
   const [isInCall, setIsInCall] = useState(false);
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
@@ -62,7 +70,7 @@ const VideoCall: React.FC = () => {
     to: string;
   }) => {
     console.log("Received video offer:", offer);
-    const peerConnection = new RTCPeerConnection();
+    const peerConnection = new RTCPeerConnection(iceServers); // Include the iceServers configuration
     peerRef.current = peerConnection;
 
     peerConnection.onicecandidate = (event) => {
@@ -130,7 +138,8 @@ const VideoCall: React.FC = () => {
 
   const startCall = async () => {
     const stream = await startVideo();
-    const peerConnection = new RTCPeerConnection();
+    const peerConnection = new RTCPeerConnection(iceServers); // Include the iceServers configuration
+
     peerRef.current = peerConnection;
 
     peerConnection.onicecandidate = (event) => {
